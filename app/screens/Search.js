@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
     FlatList,
@@ -9,9 +10,11 @@ import {
 } from 'react-native';
 import Api from '../assets/Api';
 
+import FastImage from 'react-native-fast-image';
+
 import {Colors} from '../assets/Colors';
-import {CommonStyles, WIDTH} from '../assets/CommonStyles';
-import {RegularText} from '../assets/StyledText';
+import {CommonStyles, WIDTH, HEIGHT} from '../assets/CommonStyles';
+import {BoldText, LightText, RegularText} from '../assets/StyledText';
 
 export class Search extends React.Component {
 
@@ -47,21 +50,68 @@ export class Search extends React.Component {
 
     renderSearchResults() {
         return (
-            <ScrollView style={styles.scrollContainer}>
+            <ScrollView
+                style={styles.scrollContainer}
+                contentContainerStyle={{alignItems: 'center'}}>
                 <View style={styles.resultsContainer}>
                     <FlatList
                         data={this.state.searchResults}
                         extraData={this.state}
                         keyExtractor={this._keyExtractor}
                         initialNumToRender={10}
+                        renderItem={this.renderResultItem}
                         ItemSeparatorComponent={() => {
                             return <View style={styles.separator} />;
+                        }}
+                        ListEmptyComponent={() => {
+                            return (
+                                <View style={styles.emptyList}>
+                                    <RegularText style={styles.emptyText}>
+                                        Sua busca não encontrou resultados! :(
+                                    </RegularText>
+                                </View>
+
+                            );
                         }}
                     />
                 </View>
             </ScrollView>
         );
     }
+
+    renderResultItem = ({item}) => {
+        console.log(item.volumeInfo);
+        const {title, authors, imageLinks} = item.volumeInfo;
+
+        return (
+            <TouchableOpacity style={styles.bookContainer}>
+                <View style={styles.bookImageContainer}>
+                    {imageLinks !== undefined &&
+                    'smallThumbnail' in imageLinks &&
+                    imageLinks.smallThumbnail !== '' ? (
+                        <FastImage
+                            style={CommonStyles.image}
+                            source={{uri: imageLinks.smallThumbnail}}
+                            resizeMode={FastImage.resizeMode.contain}
+                        />
+                    ) : (
+                        <FastImage
+                            style={CommonStyles.image}
+                            source={require('../assets/images/not-available.png')}
+                            resizeMode={FastImage.resizeMode.contain}
+                        />
+                    )}
+                </View>
+                <View style={{flex: 1}}>
+                    <BoldText>{title}</BoldText>
+                    <LightText>{authors ? authors.join(', ') : null}</LightText>
+                </View>
+                <View style={styles.favoriteBox}>
+
+                </View>
+            </TouchableOpacity>
+        );
+    };
 
     render() {
         return (
@@ -99,18 +149,46 @@ export class Search extends React.Component {
 
 const styles = StyleSheet.create({
     scrollContainer: {
-        width: WIDTH * 0.9,
+        width: WIDTH,
         alignSelf: 'center',
-        borderWidth: 1,
     },
     resultsContainer: {
+        width: WIDTH * 0.9,
         paddingBottom: 40,
     },
     separator: {
-        width: WIDTH * 0.8,
-        height: 2,
+        width: WIDTH * 0.9,
+        height: 1,
         alignSelf: 'center',
         backgroundColor: Colors.blackTransparent2,
-        marginVertical: 20,
+        marginVertical: 10,
     },
+
+    emptyList: {
+        flex: 1,
+        height: HEIGHT * 0.1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        fontSize: 16,
+        color: Colors.lightGray,
+    },
+
+    bookContainer: {
+        height: HEIGHT * 0.1,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+    bookImageContainer: {
+        width: HEIGHT * 0.1,
+        height: '100%',
+        marginRight: 10,
+    },
+    favoriteBox: {
+        width: HEIGHT * 0.1,
+        height: '100%',
+        marginLeft: 10,
+    }
 });

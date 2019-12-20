@@ -28,7 +28,8 @@ export const CommonStyles = StyleSheet.create({
     textInputContainer: {
         width: WIDTH * 0.9,
         height: HEIGHT * 0.1,
-        marginVertical: 10,
+        marginTop: 10,
+        marginBottom: 20,
         borderBottomWidth: 1,
         borderColor: Colors.orange,
     },
@@ -37,5 +38,10 @@ export const CommonStyles = StyleSheet.create({
         fontFamily: 'Apercu-Regular',
         color: Colors.black,
         flex: 1,
+    },
+
+    image: {
+        width: '100%',
+        height: '100%',
     },
 });
