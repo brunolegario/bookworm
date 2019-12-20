@@ -12,6 +12,7 @@ import {
 import Api from '../assets/Api';
 
 import FastImage from 'react-native-fast-image';
+import Modal from 'react-native-modal';
 
 import {Colors} from '../assets/Colors';
 import {CommonStyles, WIDTH, HEIGHT} from '../assets/CommonStyles';
@@ -29,6 +30,8 @@ export class Search extends React.Component {
             page: 0,
 
             searchResults: [],
+            bookSelected: null,
+            modalDetail: false,
         };
 
         this.refs = {};
@@ -42,9 +45,9 @@ export class Search extends React.Component {
 
         Api.searchBooks(term, this.state.apiKey, this.state.page).then(
             result => {
-                console.log('WORKS: ', result);
+                //console.log('WORKS: ', result);
                 this.setState({searchResults: result.data}, () => {
-                    console.log(this.refs.listResults)
+                    //console.log(this.refs.listResults);
                     if (this.refs.listResults) {
                         this.refs.listResults.scrollToIndex({animated: true, index: 0});
                     }
@@ -133,11 +136,13 @@ export class Search extends React.Component {
     }
 
     renderResultItem = ({item}) => {
-        console.log(item.volumeInfo);
+        //console.log(item.volumeInfo);
         const {title, authors, imageLinks} = item.volumeInfo;
 
         return (
-            <TouchableOpacity style={styles.bookContainer}>
+            <TouchableOpacity
+                style={styles.bookContainer}
+                onPress={() => this.setState({ bookSelected: item }, () =>  this.setState({ modalDetail: true }))}>
                 <View style={styles.bookImageContainer}>
                     {imageLinks !== undefined &&
                     'smallThumbnail' in imageLinks &&
@@ -168,6 +173,36 @@ export class Search extends React.Component {
         );
     };
 
+    renderBookDetail() {
+        const { title, imageLinks } = this.state.bookSelected.volumeInfo;
+        console.log(imageLinks);
+
+        return (
+            <ScrollView>
+                <View style={{ width: '100%', height: HEIGHT * 0.3 }}>
+                    {imageLinks !== undefined &&
+                    'thumbnail' in imageLinks &&
+                    imageLinks.thumbnail !== '' ? (
+                        <FastImage
+                            style={CommonStyles.image}
+                            source={{uri: imageLinks.thumbnail}}
+                            resizeMode={FastImage.resizeMode.contain}
+                        />
+                    ) : (
+                        <FastImage
+                            style={CommonStyles.image}
+                            source={require('../assets/images/not-available.png')}
+                            resizeMode={FastImage.resizeMode.contain}
+                        />
+                    )}
+                </View>
+                <BoldText style={{ marginVertical: 20, fontSize: 18, textAlign: 'center' }}>
+                    {title}
+                </BoldText>
+            </ScrollView>
+        );
+    }
+
     render() {
         return (
             <View style={CommonStyles.background}>
@@ -197,6 +232,33 @@ export class Search extends React.Component {
                 </TouchableOpacity>
 
                 {this.renderSearchResults()}
+
+                <Modal
+                    isVisible={!!this.state.bookSelected}
+                    style={{alignItems: 'center', justifyContent: 'center', flex: 1}}
+                    onBackdropPress={() => this.setState({ bookSelected: null })}
+                    animationIn="bounceIn"
+                    animationOut="slideOutDown"
+                    animationInTiming={500}
+                    animationOutTiming={500}
+                    backdropTransitionInTiming={500}
+                    backdropTransitionOutTiming={500}>
+                    <View style={styles.modalContainer}>
+                        <View style={[styles.closeButtonModal]}>
+                            <TouchableOpacity
+                                style={[styles.closeButtonTouchableModal]}
+                                onPress={()=> this.setState({bookSelected: null}) } >
+                                <FastImage
+                                    style={{ width: '50%', height: '50%' }}
+                                    source={require('../assets/images/close.png')}
+                                    resizeMode={FastImage.resizeMode.contain}
+                                    tintColor={Colors.lightGray}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        {!!this.state.bookSelected ? this.renderBookDetail() : null }
+                    </View>
+                </Modal>
             </View>
         );
     }
@@ -265,5 +327,25 @@ const styles = StyleSheet.create({
     },
     notClickable: {
         color: Colors.lightGray,
+    },
+
+    modalContainer: {
+        width: WIDTH * 0.8,
+        height: HEIGHT * 0.8,
+        backgroundColor: Colors.white,
+        borderRadius: 10,
+    },
+    closeButtonModal: {
+        width: '100%',
+        height: HEIGHT * 0.08,
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        paddingHorizontal: '5%',
+    },
+    closeButtonTouchableModal: {
+        width: WIDTH * 0.1,
+        height: '60%',
+        alignItems: 'flex-end',
+        justifyContent: 'center',
     },
 });
