@@ -32,7 +32,6 @@ export class Search extends React.Component {
 
             searchResults: [],
             bookSelected: null,
-            modalDetail: false,
         };
 
         this.refs = {};
@@ -142,9 +141,9 @@ export class Search extends React.Component {
 
         return (
             <TouchableOpacity
-                style={styles.bookContainer}
+                style={CommonStyles.bookContainer}
                 onPress={() => this.setState({ bookSelected: item }, () =>  this.setState({ modalDetail: true }))}>
-                <View style={styles.bookImageContainer}>
+                <View style={CommonStyles.bookImageContainer}>
                     {imageLinks !== undefined &&
                     'smallThumbnail' in imageLinks &&
                     imageLinks.smallThumbnail !== '' ? (
@@ -167,7 +166,7 @@ export class Search extends React.Component {
                         {authors ? ShortenString(authors.join(', '), 50) : null}
                     </LightText>
                 </View>
-                <View style={styles.favoriteBox}>
+                <View style={CommonStyles.favoriteBox}>
 
                 </View>
             </TouchableOpacity>
@@ -320,27 +319,6 @@ export class Search extends React.Component {
 }
 
 const styles = StyleSheet.create({
-
-
-
-
-
-    bookContainer: {
-        height: HEIGHT * 0.1,
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-    },
-    bookImageContainer: {
-        width: HEIGHT * 0.1,
-        height: '100%',
-        marginRight: 10,
-    },
-    favoriteBox: {
-        width: HEIGHT * 0.1,
-        height: '100%',
-        marginLeft: 10,
-    },
 
     listFooter: {
         width: WIDTH * 0.9,

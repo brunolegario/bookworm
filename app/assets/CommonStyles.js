@@ -71,4 +71,20 @@ export const CommonStyles = StyleSheet.create({
         color: Colors.lightGray,
     },
 
+    bookContainer: {
+        height: HEIGHT * 0.1,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+    bookImageContainer: {
+        width: HEIGHT * 0.1,
+        height: '100%',
+        marginRight: 10,
+    },
+    favoriteBox: {
+        width: HEIGHT * 0.1,
+        height: '100%',
+        marginLeft: 10,
+    },
 });

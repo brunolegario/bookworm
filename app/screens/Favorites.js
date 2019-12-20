@@ -17,6 +17,7 @@ export class Favorites extends React.Component {
 
         this.state = {
             favoritesList: [],
+            bookSelected: null,
         };
 
     }
@@ -52,6 +53,44 @@ export class Favorites extends React.Component {
             </ScrollView>
         );
     }
+
+    renderFavoriteItem = ({item}) => {
+        //console.log(item.volumeInfo);
+        const {title, authors, imageLinks} = item.volumeInfo;
+
+        return (
+            <TouchableOpacity
+                style={CommonStyles.bookContainer}
+                onPress={() => this.setState({ bookSelected: item }, () =>  this.setState({ modalDetail: true }))}>
+                <View style={CommonStyles.bookImageContainer}>
+                    {imageLinks !== undefined &&
+                    'smallThumbnail' in imageLinks &&
+                    imageLinks.smallThumbnail !== '' ? (
+                        <FastImage
+                            style={CommonStyles.image}
+                            source={{uri: imageLinks.smallThumbnail}}
+                            resizeMode={FastImage.resizeMode.contain}
+                        />
+                    ) : (
+                        <FastImage
+                            style={CommonStyles.image}
+                            source={require('../assets/images/not-available.png')}
+                            resizeMode={FastImage.resizeMode.contain}
+                        />
+                    )}
+                </View>
+                <View style={{flex: 1}}>
+                    <BoldText>{ShortenString(title, 50)}</BoldText>
+                    <LightText>
+                        {authors ? ShortenString(authors.join(', '), 50) : null}
+                    </LightText>
+                </View>
+                <View style={CommonStyles.favoriteBox}>
+
+                </View>
+            </TouchableOpacity>
+        );
+    };
 
     render() {
         return (
