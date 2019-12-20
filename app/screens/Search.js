@@ -3,6 +3,7 @@
 import React, {Fragment} from 'react';
 import {
     FlatList,
+    Linking,
     ScrollView,
     StyleSheet,
     View,
@@ -68,9 +69,9 @@ export class Search extends React.Component {
     renderSearchResults() {
         return (
             <ScrollView
-                style={styles.scrollContainer}
+                style={CommonStyles.scrollContainer}
                 contentContainerStyle={{alignItems: 'center'}}>
-                <View style={styles.resultsContainer}>
+                <View style={CommonStyles.resultsContainer}>
                     <FlatList
                         ref={'listResults'}
                         data={this.state.searchResults}
@@ -79,12 +80,12 @@ export class Search extends React.Component {
                         initialNumToRender={10}
                         renderItem={this.renderResultItem}
                         ItemSeparatorComponent={() => {
-                            return <View style={styles.separator} />;
+                            return <View style={CommonStyles.separator} />;
                         }}
                         ListEmptyComponent={() => {
                             return (
-                                <View style={styles.emptyList}>
-                                    <RegularText style={styles.emptyText}>
+                                <View style={CommonStyles.emptyList}>
+                                    <RegularText style={CommonStyles.emptyText}>
                                         Sua busca não encontrou resultados! :(
                                     </RegularText>
                                 </View>
@@ -174,7 +175,7 @@ export class Search extends React.Component {
     };
 
     renderBookDetail() {
-        const { title, subtitle, authors, description, categories, pageCount, imageLinks } = this.state.bookSelected.volumeInfo;
+        const { title, subtitle, authors, description, categories, pageCount, previewLink, imageLinks } = this.state.bookSelected.volumeInfo;
         console.log(this.state.bookSelected.volumeInfo);
         //console.log(imageLinks);
 
@@ -239,6 +240,16 @@ export class Search extends React.Component {
                                 </LightText>
                             </View>
                         </View>
+                    ) : null}
+
+                    {previewLink ? (
+                        <TouchableOpacity
+                            style={{ width: '90%', height: HEIGHT * 0.1, alignItems: 'center', justifyContent: 'center' }}
+                            onPress={() => Linking.openURL(previewLink)}>
+                            <BoldText style={{textAlign: 'center'}}>
+                                PREVIEW NO BROWSER
+                            </BoldText>
+                        </TouchableOpacity>
                     ) : null}
                 </View>
 
@@ -309,32 +320,10 @@ export class Search extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    scrollContainer: {
-        width: WIDTH,
-        alignSelf: 'center',
-    },
-    resultsContainer: {
-        width: WIDTH * 0.9,
-        paddingBottom: 40,
-    },
-    separator: {
-        width: WIDTH * 0.9,
-        height: 1,
-        alignSelf: 'center',
-        backgroundColor: Colors.blackTransparent2,
-        marginVertical: 10,
-    },
 
-    emptyList: {
-        flex: 1,
-        height: HEIGHT * 0.1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    emptyText: {
-        fontSize: 16,
-        color: Colors.lightGray,
-    },
+
+
+
 
     bookContainer: {
         height: HEIGHT * 0.1,

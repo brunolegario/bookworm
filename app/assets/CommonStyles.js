@@ -44,4 +44,31 @@ export const CommonStyles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
+
+    scrollContainer: {
+        width: WIDTH,
+        alignSelf: 'center',
+    },
+    resultsContainer: {
+        width: WIDTH * 0.9,
+        paddingBottom: 40,
+    },
+    separator: {
+        width: WIDTH * 0.9,
+        height: 1,
+        alignSelf: 'center',
+        backgroundColor: Colors.blackTransparent2,
+        marginVertical: 10,
+    },
+    emptyList: {
+        flex: 1,
+        height: HEIGHT * 0.1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        fontSize: 16,
+        color: Colors.lightGray,
+    },
+
 });
