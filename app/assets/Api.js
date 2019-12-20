@@ -28,9 +28,10 @@ class Api {
         );
     }
 
-    searchBooks(term, key) {
+    searchBooks(term, key, page) {
         let text = encodeURI(term);
-        let query = `${text}&key=${key}`;
+        let start = page * 10;
+        let query = `${text}&key=${key}&startIndex=${start}`;
 
         return this.api.get(`?q=${query}`);
     }
