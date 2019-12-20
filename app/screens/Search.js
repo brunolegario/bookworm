@@ -13,6 +13,7 @@ import {
 import Api from '../assets/Api';
 
 import FastImage from 'react-native-fast-image';
+import Icon from 'react-native-vector-icons/AntDesign';
 import Modal from 'react-native-modal';
 
 import {Colors} from '../assets/Colors';
@@ -167,7 +168,11 @@ export class Search extends React.Component {
                     </LightText>
                 </View>
                 <View style={CommonStyles.favoriteBox}>
-
+                    <TouchableOpacity
+                            style={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center'}}
+                            >
+                            <Icon name={'like2'} size={30} color={Colors.black} />
+                        </TouchableOpacity>
                 </View>
             </TouchableOpacity>
         );
