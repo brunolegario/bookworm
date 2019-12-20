@@ -1,6 +1,6 @@
 /* eslint-disable react/no-string-refs */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {Fragment} from 'react';
 import {
     FlatList,
     ScrollView,
@@ -174,31 +174,75 @@ export class Search extends React.Component {
     };
 
     renderBookDetail() {
-        const { title, imageLinks } = this.state.bookSelected.volumeInfo;
-        console.log(imageLinks);
+        const { title, subtitle, authors, description, categories, pageCount, imageLinks } = this.state.bookSelected.volumeInfo;
+        console.log(this.state.bookSelected.volumeInfo);
+        //console.log(imageLinks);
 
         return (
             <ScrollView>
-                <View style={{ width: '100%', height: HEIGHT * 0.3 }}>
-                    {imageLinks !== undefined &&
-                    'thumbnail' in imageLinks &&
-                    imageLinks.thumbnail !== '' ? (
-                        <FastImage
-                            style={CommonStyles.image}
-                            source={{uri: imageLinks.thumbnail}}
-                            resizeMode={FastImage.resizeMode.contain}
-                        />
-                    ) : (
-                        <FastImage
-                            style={CommonStyles.image}
-                            source={require('../assets/images/not-available.png')}
-                            resizeMode={FastImage.resizeMode.contain}
-                        />
-                    )}
+                <View style={{ width: '100%', height: '100%', alignItems: 'center', paddingBottom: 30 }}>
+                    <View style={{ width: '100%', height: HEIGHT * 0.3 }}>
+                        {imageLinks !== undefined &&
+                        'thumbnail' in imageLinks &&
+                        imageLinks.thumbnail !== '' ? (
+                            <FastImage
+                                style={CommonStyles.image}
+                                source={{uri: imageLinks.thumbnail}}
+                                resizeMode={FastImage.resizeMode.contain}
+                            />
+                        ) : (
+                            <FastImage
+                                style={CommonStyles.image}
+                                source={require('../assets/images/not-available.png')}
+                                resizeMode={FastImage.resizeMode.contain}
+                            />
+                        )}
+                    </View>
+                    <BoldText style={{ marginTop: 20, fontSize: 18, textAlign: 'center', color: Colors.orange }}>
+                        {title}
+                    </BoldText>
+
+                    {subtitle ? (
+                        <LightText style={{ width: '90%', marginTop: 5, fontSize: 12, textAlign: 'center', color: Colors.lightGray }}>
+                            {subtitle}
+                        </LightText>
+                    ) : null}
+
+                    {authors ? (
+                        <RegularText style={{ width: '90%', marginTop: 15, fontSize: 14, textAlign: 'center' }}>
+                            {authors.join(', ')}
+                        </RegularText>
+                    ) : null}
+
+                    {description ? (
+                        <LightText style={{ width: '90%', marginTop: 20, fontSize: 12, textAlign: 'left' }}>
+                            {description}
+                        </LightText>
+                    ) : null}
+
+                    {categories ? (
+                        <View style={{width: '90%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <View style={{flex: 1}}>
+                                <BoldText style={{ width: '100%', marginTop: 20, fontSize: 12, textAlign: 'left', color: Colors.orange }}>
+                                    CATEGORIAS
+                                </BoldText>
+                                <LightText style={{ width: '100%', marginTop: 5, fontSize: 14, textAlign: 'left' }}>
+                                    {categories.join(', ')}
+                                </LightText>
+                            </View>
+                            <View style={{flex: 1}}>
+                                <BoldText style={{ width: '100%', marginTop: 20, fontSize: 12, textAlign: 'right', color: Colors.orange }}>
+                                    PÁGINAS
+                                </BoldText>
+                                <LightText style={{ width: '100%', marginTop: 5, fontSize: 18, textAlign: 'right' }}>
+                                    {pageCount}
+                                </LightText>
+                            </View>
+                        </View>
+                    ) : null}
                 </View>
-                <BoldText style={{ marginVertical: 20, fontSize: 18, textAlign: 'center' }}>
-                    {title}
-                </BoldText>
+
+
             </ScrollView>
         );
     }
