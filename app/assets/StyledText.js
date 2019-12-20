@@ -35,11 +35,14 @@ export class RegularText extends React.Component {
 const styles = StyleSheet.create({
     fontBold: {
         fontFamily: 'Apercu-Bold',
+        fontSize: 16,
     },
     fontLight: {
         fontFamily: 'Apercu-Light',
+        fontSize: 16,
     },
     fontRegular: {
         fontFamily: 'Apercu-Regular',
+        fontSize: 16,
     },
 });

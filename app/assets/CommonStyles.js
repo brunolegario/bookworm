@@ -1,4 +1,7 @@
 import {StyleSheet, Dimensions} from 'react-native';
+
+import {getStatusBarHeight} from 'react-native-status-bar-height';
+
 import {Colors} from './Colors';
 
 export const HEIGHT = Dimensions.get('window').height;
@@ -11,8 +14,7 @@ export const CommonStyles = StyleSheet.create({
     },
     background: {
         width: WIDTH,
-        height: HEIGHT * 0.9,
+        height: HEIGHT * 0.9 - getStatusBarHeight(),
         backgroundColor: Colors.white,
-        borderWidth: 1,
     },
 });
