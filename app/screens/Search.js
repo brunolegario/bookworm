@@ -1,3 +1,4 @@
+/* eslint-disable react/no-string-refs */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
@@ -15,6 +16,7 @@ import FastImage from 'react-native-fast-image';
 import {Colors} from '../assets/Colors';
 import {CommonStyles, WIDTH, HEIGHT} from '../assets/CommonStyles';
 import {BoldText, LightText, RegularText} from '../assets/StyledText';
+import {ShortenString} from '../assets/utils';
 
 export class Search extends React.Component {
 
@@ -29,6 +31,7 @@ export class Search extends React.Component {
             searchResults: [],
         };
 
+        this.refs = {};
         this.inputs = {};
     }
 
@@ -40,13 +43,24 @@ export class Search extends React.Component {
         Api.searchBooks(term, this.state.apiKey, this.state.page).then(
             result => {
                 console.log('WORKS: ', result);
-                this.setState({searchResults: result.data});
+                this.setState({searchResults: result.data}, () => {
+                    console.log(this.refs.listResults)
+                    if (this.refs.listResults) {
+                        this.refs.listResults.scrollToIndex({animated: true, index: 0});
+                    }
+                });
             },
             error => {
                 console.log('ERROR: ', error);
             },
         );
     };
+
+    changePage(num) {
+        this.setState({page: num}, () => {
+            this.searchBook(this.state.searchInput);
+        });
+    }
 
     renderSearchResults() {
         return (
@@ -55,6 +69,7 @@ export class Search extends React.Component {
                 contentContainerStyle={{alignItems: 'center'}}>
                 <View style={styles.resultsContainer}>
                     <FlatList
+                        ref={'listResults'}
                         data={this.state.searchResults}
                         extraData={this.state}
                         keyExtractor={this._keyExtractor}
@@ -72,6 +87,44 @@ export class Search extends React.Component {
                                 </View>
 
                             );
+                        }}
+                        ListFooterComponent={() => {
+                            return this.state.searchResults.length !== 0 ? (
+                                <View style={styles.listFooter}>
+                                    <TouchableOpacity
+                                        style={styles.listFooterItem}
+                                        onPress={() => {
+                                            if (this.state.page > 0) {
+                                                this.changePage(this.state.page-1);
+                                            }
+                                        }}>
+                                        <RegularText
+                                            style={
+                                                this.state.page > 0
+                                                    ? styles.clickable
+                                                    : styles.notClickable
+                                            }>
+                                            &lt; Anteriores
+                                        </RegularText>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.listFooterItem}
+                                        onPress={() => {
+                                            if (this.state.searchResults.length === 10) {
+                                                this.changePage(this.state.page+1);
+                                            }
+                                        }}>
+                                        <RegularText
+                                            style={
+                                                this.state.searchResults.length === 10
+                                                    ? styles.clickable
+                                                    : styles.notClickable
+                                            }>
+                                            Próximos &gt;
+                                        </RegularText>
+                                    </TouchableOpacity>
+                                </View>
+                                ) : null;
                         }}
                     />
                 </View>
@@ -103,8 +156,10 @@ export class Search extends React.Component {
                     )}
                 </View>
                 <View style={{flex: 1}}>
-                    <BoldText>{title}</BoldText>
-                    <LightText>{authors ? authors.join(', ') : null}</LightText>
+                    <BoldText>{ShortenString(title, 50)}</BoldText>
+                    <LightText>
+                        {authors ? ShortenString(authors.join(', '), 50) : null}
+                    </LightText>
                 </View>
                 <View style={styles.favoriteBox}>
 
@@ -133,7 +188,7 @@ export class Search extends React.Component {
                         returnKeyType={'search'}
                         value={this.state.searchInput}
                         onSubmitEditing={() => {
-                            this.searchBook(this.state.searchInput);
+                            this.changePage(0);
                         }}
                         onChangeText={text => {
                             return this.setState({searchInput: text});
@@ -190,5 +245,25 @@ const styles = StyleSheet.create({
         width: HEIGHT * 0.1,
         height: '100%',
         marginLeft: 10,
-    }
+    },
+
+    listFooter: {
+        width: WIDTH * 0.9,
+        height: HEIGHT * 0.1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    listFooterItem: {
+        flex: 1,
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    clickable: {
+        color: Colors.orange,
+    },
+    notClickable: {
+        color: Colors.lightGray,
+    },
 });
